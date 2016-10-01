@@ -83,7 +83,7 @@ import java.io.*;
 import java.net.*;
 
 
-public class TFTPClient 
+public class TFTPClient extends JFrame
 {
 	//declaring local instance variables
 	private DatagramPacket sentPacket;
@@ -93,6 +93,10 @@ public class TFTPClient
 	private int outPort;
 	private TFTPReader reader;
 	private TFTPWriter writer;
+	private static Scanner scan= new Scanner(System.in);
+	private static JTextArea fileChooserFrame;
+	private static File file;
+	private static JFileChooser fileChooser;
 	
 	//declaring local class constants
 	private static final int IN_PORT_HOST = 23;
@@ -124,7 +128,7 @@ public class TFTPClient
 		//make an empty reader
 		reader = new TFTPReader();
 		//make an empty writer
-		//writer = new TFTPWriter();
+		writer = new TFTPWriter();
 	}
 	
 	
@@ -201,7 +205,7 @@ public class TFTPClient
 		//generate and save datagram packet
 		try
 		{
-			sentPacket = new DatagramPacket(toSend, toSend.length, InetAddress.getLocalHost(), outPort);
+			sentPacket = new DatagramPacket(data, data.length, InetAddress.getLocalHost(), outPort);
 			if(verbose)
 			{
 				System.out.println("Client: Packet successfully created");
@@ -444,16 +448,30 @@ public class TFTPClient
 		//declaring local variables
 		TFTPClient client = new TFTPClient();
 		byte flipFlop = 0x01;
+		fileChooserFrame = new JTextArea(5,40);
+		fileChooser = new JFileChooser();
 		
-		//send directly to server and verbose ON
-		client.testMode(false);
-		client.verboseMode(true);
+		//Find whether you want to run in test mode or not
+		System.out.println("Test mode: (T)rue or (F)alse?");
+		String testBool = scan.nextLine();
+		if (testBool.equals("T")) client.testMode(true);
+		else {client.testMode(false);}
+		
+		//Find whether you want to run in verbose mode or not
+		System.out.println("Verbose mode: (T)rue or (F)alse?");
+		String verboseBool = scan.nextLine();
+		if (verboseBool.equals("T")) client.verboseMode(true);
+		else {client.verboseMode(false);}
+		
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+		int result = fileChooser.showOpenDialog(fileChooser);
+		if (result == JFileChooser.APPROVE_OPTION) {//file is found
+		    file = fileChooser.getSelectedFile();//get file name
+		}
 		
 		//send full fille (includes wait for ACK)
 		client.sendWRQ("1ByteDataTest.txt", "octet");
-		
-		//receive server response
-		
+
 		
 		
 		
