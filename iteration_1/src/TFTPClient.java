@@ -503,6 +503,7 @@ public class TFTPClient extends JFrame
 	{
 		byte[] data = datagram.getData();
 		int packetSize = datagram.getLength();
+		
 		System.out.println("        Source: " + recievedPacket.getAddress());
 		System.out.println("        Port:   " + recievedPacket.getPort());
 		System.out.println("        Bytes:  " + packetSize);
